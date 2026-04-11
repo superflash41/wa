@@ -1,13 +1,23 @@
 default: build
 
-# build the executable
+# build the binary
 build:
-	swiftc main.swift -o wa
+	swift build -c release
+	rm -f wa
+	cp .build/release/wa .
 
-# run the live wallpaper with a video file
-run video_path: build
-	./wa {{video_path}}
+# start the wallpaper
+run video="": build
+	./wa start {{video}}
+
+# stop the wallpaper
+stop: build
+	./wa stop
+
+# show status
+status: build
+	./wa status
 
 # clean compiled binaries
 clean:
-	rm -f wa main
+	rm -rf wa .build
