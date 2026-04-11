@@ -8,3 +8,5 @@ wa
 *.xcworkspace/
 xcuserdata/
 DerivedData/
+
+.vscode/
