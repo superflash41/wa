@@ -62,6 +62,7 @@ struct Daemon: ParsableCommand {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var manager: WallpaperManager?
+    var statusItem: NSStatusItem?
     let videoURL: URL
     
     init(videoURL: URL) {
@@ -70,6 +71,43 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         manager = WallpaperManager(videoURL: videoURL)
+        
+        setupMenu()
+    }
+    
+    func setupMenu() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        if let button = statusItem?.button {
+            if #available(macOS 11.0, *) {
+                button.image = NSImage(systemSymbolName: "display", accessibilityDescription: "wa")
+            } else {
+                button.title = "wa"
+            }
+        }
+        
+        let menu = NSMenu()
+        
+        menu.addItem(NSMenuItem(title: "Toggle Pause", action: #selector(togglePause), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit wa", action: #selector(quit), keyEquivalent: ""))
+        
+        statusItem?.menu = menu
+    }
+    
+    @objc func togglePause() {
+        manager?.win.forEach {
+            if let player = $0.player {
+                if player.rate == 0 {
+                    player.play()
+                } else {
+                    player.pause()
+                }
+            }
+        }
+    }
+    
+    @objc func quit() {
+        NSApplication.shared.terminate(nil)
     }
     
     func applicationWillTerminate(_ notification: Notification) {
