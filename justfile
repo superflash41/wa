@@ -1,4 +1,6 @@
-default: build
+# list available commands
+default:
+    @just --list
 
 # build the binary
 build:
@@ -6,9 +8,13 @@ build:
 	rm -f wa
 	cp .build/release/wa .
 
-# start the wallpaper
+# start the wallpaper app
 run video="": build
-	./wa start {{video}}
+	./wa start {{ if video == "" { "" } else { quote(video) } }}
+
+# run the menu bar app in the foreground
+app video="": build
+	./wa app {{ if video == "" { "" } else { quote(video) } }}
 
 # stop the wallpaper
 stop: build
@@ -18,6 +24,14 @@ stop: build
 status: build
 	./wa status
 
-# clean compiled binaries
+# install agent
+install video="": build
+	./wa install-agent {{ if video == "" { "" } else { quote(video) } }} --executable ./wa
+
+# remove agent
+uninstall: build
+	./wa uninstall-agent
+
+# cleanup
 clean:
 	rm -rf wa .build
