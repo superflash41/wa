@@ -4,7 +4,7 @@ import Foundation
 struct InstallAgent: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "install-agent",
-        abstract: "Install a user LaunchAgent so wa starts at login and restarts if it exits."
+        abstract: "Install a user LaunchAgent so wa starts at login and restarts after a crash."
     )
 
     @Argument(help: "Optional path to a local video file to select before installing.")

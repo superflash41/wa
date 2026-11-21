@@ -34,7 +34,8 @@ final class LaunchAgentManager {
                 "app"
             ],
             "RunAtLoad": true,
-            "KeepAlive": true,
+            // restart after a crash, but let quit from the menu bar stay quit
+            "KeepAlive": ["SuccessfulExit": false],
             "ProcessType": "Interactive",
             "LimitLoadToSessionType": "Aqua",
             "StandardOutPath": logDirectory.appendingPathComponent("launchagent.out.log").path,
