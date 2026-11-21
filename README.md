@@ -2,6 +2,10 @@
 
 minimalist macOS menu bar app to loop a video as desktop wallpaper.
 
+<p align="center">
+  <img src="assets/demo.svg" width="760" alt="animated illustration of the wa menu bar menu: picking a wallpaper from recent wallpapers, then pausing and resuming playback">
+</p>
+
 ## requirements
 
 - macOS 12 or newer
@@ -17,5 +21,3 @@ just uninstall            # remove the launchagent
 ```
 
 `install` writes a user launchagent at `~/Library/LaunchAgents/local.wa.wallpaper-manager.plist`.
-
-<video src="./assets/kimi.mp4" controls></video>
