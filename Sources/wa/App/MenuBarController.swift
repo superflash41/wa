@@ -64,6 +64,7 @@ final class MenuBarController: NSObject {
                 )
                 item.representedObject = path
                 item.toolTip = path
+                item.state = path == configuration.selectedWallpaperPath ? .on : .off
                 recentMenu.addItem(item)
             }
 
