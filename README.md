@@ -108,3 +108,7 @@ swift build -c release    # release build at .build/release/wa
 | `Sources/wa/Core` | playback: looping player, wallpaper windows and display handling |
 | `Sources/wa/Infrastructure` | filesystem paths, configuration, launchagent, pid file and logging |
 | `Tests/waTests` | unit tests |
+
+## changelog
+
+see [CHANGELOG.md](CHANGELOG.md).

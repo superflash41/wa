@@ -5,7 +5,7 @@ struct Wa: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "wa",
         abstract: "macOS live wallpaper manager",
-        version: "0.2.0",
+        version: "0.2.1",
         subcommands: [
             Start.self,
             AppCommand.self,
