@@ -21,6 +21,10 @@ final class WallpaperWindow: NSWindow {
             defer: false
         )
 
+        // the manager owns these windows; releasing on close as well over-releases
+        // them and crashes in objc_release on the next display change
+        isReleasedWhenClosed = false
+
         configureWindow()
         configurePlayerLayer(screen: screen)
         configureObservers()
