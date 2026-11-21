@@ -2,7 +2,7 @@ import AppKit
 
 final class WallpaperManager {
     private(set) var isPaused = false
-    private var windows: [WallpaperWindow] = []
+    private var windows: [CGDirectDisplayID: WallpaperWindow] = [:]
     private var loop: LoopingPlayer?
     private var screenObserver: NSObjectProtocol?
 
@@ -12,7 +12,7 @@ final class WallpaperManager {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.refreshDisplays()
+            self?.syncDisplays()
         }
     }
 
@@ -25,25 +25,52 @@ final class WallpaperManager {
     }
 
     func setWallpaper(_ url: URL) {
-        loop = LoopingPlayer(url: url)
+        let loop = LoopingPlayer(url: url)
+        self.loop = loop
         isPaused = false
-        refreshDisplays()
+
+        windows.values.forEach { $0.show(loop.player) }
+        syncDisplays()
     }
 
-    func refreshDisplays() {
-        closeWindows()
-
+    /// Matches the windows to the connected displays: adds windows for new
+    /// displays, closes windows for removed ones and moves the rest in place,
+    /// so a display change does not restart playback.
+    func syncDisplays() {
         guard let loop else {
+            closeWindows()
             return
         }
 
-        windows = NSScreen.screens.map { screen in
-            WallpaperWindow(screen: screen, player: loop.player) { [weak self] in
-                self?.updatePlayback()
+        var screens: [CGDirectDisplayID: NSScreen] = [:]
+        for screen in NSScreen.screens {
+            if let displayID = screen.displayID {
+                screens[displayID] = screen
+            }
+        }
+
+        for (displayID, window) in windows where screens[displayID] == nil {
+            window.close()
+            windows[displayID] = nil
+        }
+
+        for (displayID, screen) in screens {
+            if let window = windows[displayID] {
+                window.move(to: screen)
+            } else {
+                windows[displayID] = WallpaperWindow(screen: screen, player: loop.player) { [weak self] in
+                    self?.updatePlayback()
+                }
             }
         }
 
         updatePlayback()
+    }
+
+    /// Recreates every window, for when a display ends up in a bad state.
+    func reloadDisplays() {
+        closeWindows()
+        syncDisplays()
     }
 
     func togglePlayback() {
@@ -58,7 +85,7 @@ final class WallpaperManager {
             return
         }
 
-        if !isPaused, windows.contains(where: \.isVisibleOnScreen) {
+        if !isPaused, windows.values.contains(where: \.isVisibleOnScreen) {
             loop.play()
         } else {
             loop.pause()
@@ -66,7 +93,13 @@ final class WallpaperManager {
     }
 
     private func closeWindows() {
-        windows.forEach { $0.close() }
+        windows.values.forEach { $0.close() }
         windows.removeAll()
+    }
+}
+
+private extension NSScreen {
+    var displayID: CGDirectDisplayID? {
+        (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value
     }
 }

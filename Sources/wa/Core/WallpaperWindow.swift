@@ -46,6 +46,18 @@ final class WallpaperWindow: NSWindow {
         }
     }
 
+    func show(_ player: AVPlayer) {
+        playerLayer.player = player
+    }
+
+    func move(to screen: NSScreen) {
+        guard frame != screen.frame else {
+            return
+        }
+
+        setFrame(screen.frame, display: true)
+    }
+
     private func configureWindow() {
         level = NSWindow.Level(Int(CGWindowLevelForKey(.desktopWindow)))
         collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]

@@ -126,7 +126,7 @@ final class MenuBarController: NSObject {
     }
 
     @objc private func refreshDisplays() {
-        wallpaperManager?.refreshDisplays()
+        wallpaperManager?.reloadDisplays()
     }
 
     @objc private func toggleAlwaysOn() {
