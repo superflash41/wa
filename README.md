@@ -12,7 +12,7 @@ minimalist macOS menu bar app to loop a video as desktop wallpaper.
 supports [just](https://just.systems/):
 
 ```bash
-just install [video]      # start at login and restart if the app exits
+just install [video]      # start at login and restart after a crash
 just uninstall            # remove the launchagent
 ```
 
