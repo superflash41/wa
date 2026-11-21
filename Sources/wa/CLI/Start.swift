@@ -18,7 +18,7 @@ struct Start: ParsableCommand {
         }
 
         _ = try LaunchAgentManager().stop()
-        _ = try PIDStore.terminateRunningProcess()
+        PIDStore.terminateRunningProcess()
         try ApplicationLauncher.start(videoURL: selectedURL)
 
         if selectedURL == nil, store.load().selectedWallpaperPath == nil {
