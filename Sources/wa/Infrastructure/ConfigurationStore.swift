@@ -11,10 +11,14 @@ final class ConfigurationStore {
     }
 
     func load() -> WallpaperConfiguration {
+        guard let data = try? Data(contentsOf: fileURL) else {
+            return .empty
+        }
+
         do {
-            let data = try Data(contentsOf: fileURL)
             return try decoder.decode(WallpaperConfiguration.self, from: data)
         } catch {
+            setAsideUnreadableFile(reason: error)
             return .empty
         }
     }
@@ -25,6 +29,24 @@ final class ConfigurationStore {
         configuration.select(url.standardizedFileURL.path)
         try save(configuration)
         return configuration
+    }
+
+    /// Moves an unreadable config to `config.json.invalid`, so the next save
+    /// does not silently replace a file the user may want to fix by hand.
+    private func setAsideUnreadableFile(reason: Error) {
+        let path = fileURL.path
+        let backupURL = fileURL.appendingPathExtension("invalid")
+
+        do {
+            if FileManager.default.fileExists(atPath: backupURL.path) {
+                try FileManager.default.removeItem(at: backupURL)
+            }
+
+            try FileManager.default.moveItem(at: fileURL, to: backupURL)
+            Log.configuration.error("moved unreadable \(path, privacy: .public) to \(backupURL.lastPathComponent, privacy: .public): \(reason.localizedDescription, privacy: .public)")
+        } catch {
+            Log.configuration.error("cannot set aside unreadable \(path, privacy: .public): \(error.localizedDescription, privacy: .public)")
+        }
     }
 
     private func save(_ configuration: WallpaperConfiguration) throws {
