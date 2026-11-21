@@ -163,6 +163,10 @@ final class MenuBarController: NSObject {
     }
 
     private func presentError(_ error: Error) {
+        // an accessory app is never active on its own, so the alert would open
+        // behind the frontmost window
+        NSApplication.shared.activate(ignoringOtherApps: true)
+
         let alert = NSAlert(error: error)
         alert.runModal()
     }
