@@ -9,15 +9,12 @@ enum ApplicationLauncher {
         return try FileResolver.resolveExecutable(CommandLine.arguments[0])
     }
 
-    static func start(videoURL: URL?) throws {
+    /// Launches `wa app` as a background process. It plays the saved
+    /// selection, so callers save a new video before starting.
+    static func start() throws {
         let process = Process()
         process.executableURL = try currentExecutableURL()
-
-        var arguments = ["app"]
-        if let videoURL {
-            arguments.append(videoURL.path)
-        }
-        process.arguments = arguments
+        process.arguments = ["app"]
 
         process.standardOutput = FileHandle.nullDevice
         process.standardError = FileHandle.nullDevice
