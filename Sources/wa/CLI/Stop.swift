@@ -8,7 +8,7 @@ struct Stop: ParsableCommand {
     mutating func run() throws {
         _ = try LaunchAgentManager().stop()
 
-        if try PIDStore.terminateRunningProcess() {
+        if PIDStore.terminateRunningProcess() {
             print("stopped wa")
         } else {
             print("wa is not running")

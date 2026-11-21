@@ -25,6 +25,6 @@ final class WallpaperApplicationDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        try? PIDStore.remove()
+        PIDStore.removeIfOwned()
     }
 }

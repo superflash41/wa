@@ -10,9 +10,9 @@ final class ApplicationRunner {
             _ = try store.selectWallpaper(initialVideoURL)
         }
 
-        terminateOtherInstanceIfNeeded()
-
-        try PIDStore.writeCurrentProcessID()
+        // only one wallpaper app runs at a time, so replace the previous one
+        PIDStore.terminateRunningProcess()
+        try PIDStore.writeCurrentProcess()
 
         let app = NSApplication.shared
         app.setActivationPolicy(.accessory)
@@ -39,22 +39,6 @@ final class ApplicationRunner {
             }
             source.resume()
             return source
-        }
-    }
-
-    private func terminateOtherInstanceIfNeeded() {
-        guard let runningPID = PIDStore.runningPID(), runningPID != getpid() else {
-            return
-        }
-
-        _ = kill(runningPID, SIGTERM)
-
-        for _ in 0..<20 {
-            if kill(runningPID, 0) != 0 {
-                return
-            }
-
-            usleep(100_000)
         }
     }
 }
