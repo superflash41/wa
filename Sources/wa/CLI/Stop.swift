@@ -6,16 +6,16 @@ struct Stop: ParsableCommand {
     )
 
     mutating func run() throws {
-        LaunchAgentManager().stop()
+        let launchAgent = LaunchAgentManager()
+        let wasRunning = PIDStore.runningPID() != nil || launchAgent.runningPID != nil
 
-        if PIDStore.terminateRunningProcess() {
-            print("stopped wa")
-        } else {
-            print("wa is not running")
-        }
+        launchAgent.stop()
+        PIDStore.terminateRunningProcess()
 
-        if LaunchAgentManager().isInstalled {
-            print("always-on LaunchAgent remains installed. Run 'wa uninstall-agent' to remove it.")
+        print(wasRunning ? "stopped wa" : "wa is not running")
+
+        if launchAgent.isInstalled {
+            print("always-on LaunchAgent remains installed, so wa starts again at login. Run 'wa uninstall-agent' to remove it.")
         }
     }
 }
