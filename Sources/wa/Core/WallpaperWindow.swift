@@ -66,6 +66,8 @@ final class WallpaperWindow: NSWindow {
 
     private func configurePlayerLayer(screen: NSScreen) {
         player.isMuted = true
+        // avplayer holds a display sleep assertion while playing by default
+        player.preventsDisplaySleepDuringVideoPlayback = false
         player.actionAtItemEnd = .none
 
         let rootView = NSView(frame: CGRect(origin: .zero, size: screen.frame.size))
