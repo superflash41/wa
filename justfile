@@ -16,6 +16,10 @@ run video="": build
 app video="": build
 	./wa app {{ if video == "" { "" } else { quote(video) } }}
 
+# run the unit tests
+test:
+	swift test
+
 # stop the wallpaper
 stop: build
 	./wa stop
