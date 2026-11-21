@@ -6,7 +6,7 @@ enum ApplicationLauncher {
             return executableURL.standardizedFileURL
         }
 
-        return try WallpaperFile.resolveExecutable(CommandLine.arguments[0])
+        return try FileResolver.resolveExecutable(CommandLine.arguments[0])
     }
 
     static func start(videoURL: URL?) throws {

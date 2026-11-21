@@ -4,7 +4,7 @@ import Foundation
 final class ApplicationRunner {
     func run(videoPath: String?) throws {
         let store = ConfigurationStore()
-        let initialVideoURL = try videoPath.map(WallpaperFile.resolve)
+        let initialVideoURL = try videoPath.map(FileResolver.resolveFile)
 
         if let initialVideoURL {
             _ = try store.selectWallpaper(initialVideoURL)
