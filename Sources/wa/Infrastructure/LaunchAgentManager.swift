@@ -23,12 +23,10 @@ final class LaunchAgentManager {
     }
 
     func install(executableURL: URL, loadNow: Bool) throws {
-        try FileManager.default.createDirectory(
-            at: AppPaths.launchAgentsDirectory,
-            withIntermediateDirectories: true
-        )
+        try AppPaths.createDirectory(AppPaths.launchAgentsDirectory)
 
-        let logDirectory = try AppPaths.logDirectory()
+        let logDirectory = AppPaths.logDirectory
+        try AppPaths.createDirectory(logDirectory)
         let plist: [String: Any] = [
             "Label": label,
             "ProgramArguments": [

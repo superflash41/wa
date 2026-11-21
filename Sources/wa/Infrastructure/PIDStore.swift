@@ -11,11 +11,12 @@ enum PIDStore {
 
     static func writeCurrentProcessID() throws {
         let pid = String(getpid())
-        try pid.write(to: AppPaths.pidFile(), atomically: true, encoding: .utf8)
+        try AppPaths.createDirectory(AppPaths.applicationSupportDirectory)
+        try pid.write(to: AppPaths.pidFile, atomically: true, encoding: .utf8)
     }
 
     static func remove() throws {
-        let fileURL = try AppPaths.pidFile(createIfNeeded: false)
+        let fileURL = AppPaths.pidFile
         if FileManager.default.fileExists(atPath: fileURL.path) {
             try FileManager.default.removeItem(at: fileURL)
         }
@@ -37,7 +38,7 @@ enum PIDStore {
     }
 
     private static func storedPID() -> Int32? {
-        guard let contents = try? String(contentsOf: AppPaths.pidFile(createIfNeeded: false)) else {
+        guard let contents = try? String(contentsOf: AppPaths.pidFile) else {
             return nil
         }
 
