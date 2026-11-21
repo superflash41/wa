@@ -17,7 +17,7 @@ struct Start: ParsableCommand {
             _ = try store.selectWallpaper(selectedURL)
         }
 
-        _ = try LaunchAgentManager().stop()
+        LaunchAgentManager().stop()
         PIDStore.terminateRunningProcess()
         try ApplicationLauncher.start(videoURL: selectedURL)
 
