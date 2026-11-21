@@ -17,11 +17,11 @@ struct InstallAgent: ParsableCommand {
         let store = ConfigurationStore()
 
         if let video {
-            let videoURL = try WallpaperFile.resolve(video)
+            let videoURL = try FileResolver.resolveFile(video)
             _ = try store.selectWallpaper(videoURL)
         }
 
-        let executableURL = try executable.map(WallpaperFile.resolveExecutable)
+        let executableURL = try executable.map(FileResolver.resolveExecutable)
             ?? ApplicationLauncher.currentExecutableURL()
 
         try LaunchAgentManager().install(executableURL: executableURL, loadNow: true)

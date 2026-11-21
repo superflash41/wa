@@ -11,7 +11,7 @@ struct Start: ParsableCommand {
 
     mutating func run() throws {
         let store = ConfigurationStore()
-        let selectedURL = try video.map(WallpaperFile.resolve)
+        let selectedURL = try video.map(FileResolver.resolveFile)
 
         if let selectedURL {
             _ = try store.selectWallpaper(selectedURL)

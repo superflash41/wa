@@ -152,7 +152,7 @@ final class MenuBarController: NSObject {
 
     private func applyWallpaper(_ url: URL) {
         do {
-            let resolvedURL = try WallpaperFile.resolve(url.path)
+            let resolvedURL = try FileResolver.resolveFile(url.path)
             _ = try configurationStore.selectWallpaper(resolvedURL)
             wallpaperManager?.setWallpaper(resolvedURL)
             rebuildMenu()
