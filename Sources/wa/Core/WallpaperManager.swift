@@ -3,7 +3,7 @@ import AppKit
 final class WallpaperManager {
     private(set) var isPaused = false
     private var windows: [WallpaperWindow] = []
-    private var videoURL: URL?
+    private var loop: LoopingPlayer?
     private var screenObserver: NSObjectProtocol?
 
     init() {
@@ -25,7 +25,7 @@ final class WallpaperManager {
     }
 
     func setWallpaper(_ url: URL) {
-        videoURL = url
+        loop = LoopingPlayer(url: url)
         isPaused = false
         refreshDisplays()
     }
@@ -33,35 +33,36 @@ final class WallpaperManager {
     func refreshDisplays() {
         closeWindows()
 
-        guard let videoURL else {
+        guard let loop else {
             return
         }
 
         windows = NSScreen.screens.map { screen in
-            WallpaperWindow(
-                videoURL: videoURL,
-                screen: screen,
-                shouldPlay: { [weak self] in self?.isPaused == false }
-            )
+            WallpaperWindow(screen: screen, player: loop.player) { [weak self] in
+                self?.updatePlayback()
+            }
         }
+
+        updatePlayback()
     }
 
     func togglePlayback() {
-        if isPaused {
-            resume()
-        } else {
-            pause()
+        isPaused.toggle()
+        updatePlayback()
+    }
+
+    /// Plays while the user has not paused and at least one display shows the
+    /// wallpaper, so a fully covered desktop costs no decoding.
+    private func updatePlayback() {
+        guard let loop else {
+            return
         }
-    }
 
-    private func pause() {
-        isPaused = true
-        windows.forEach { $0.pause() }
-    }
-
-    private func resume() {
-        isPaused = false
-        windows.forEach { $0.playIfVisible() }
+        if !isPaused, windows.contains(where: \.isVisibleOnScreen) {
+            loop.play()
+        } else {
+            loop.pause()
+        }
     }
 
     private func closeWindows() {
