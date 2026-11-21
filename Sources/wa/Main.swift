@@ -9,7 +9,6 @@ struct Wa: ParsableCommand {
         subcommands: [
             Start.self,
             AppCommand.self,
-            Daemon.self,
             Stop.self,
             Status.self,
             InstallAgent.self,
